@@ -17,7 +17,7 @@ blockchain = Blockchain()
 # Route to mine a new block
 @app.route('/mine_block', methods = {'GET'})
 def mine_block_endpoint():
-    response = mine_block(blockchain, node_address, "Swadesh")
+    response = mine_block(blockchain, node_address, "You")
     return response
 
 # Route to add a new transaction to the chain
@@ -94,4 +94,4 @@ def check_valid():
 
     return jsonify(response), 200
 
-app.run(host = '0.0.0.0', port = 5000, debug = True)
+app.run(host = '0.0.0.0', port = 5003, debug = True)

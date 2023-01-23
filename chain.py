@@ -18,7 +18,7 @@ class Blockchain:
     def create_block(self, proof: int, previous_hash):
         block = {
             'index': len(self.chain),
-            'timestamp': datetime.datetime.now(datetime.timezone.utc),
+            'timestamp': datetime.datetime.now(datetime.timezone.utc).strftime("%d-%m-%Y %H:%M:%S:%f"),
             'proof': proof,
             'previous_hash': previous_hash,
             'transactions': self.transactions
@@ -53,15 +53,17 @@ class Blockchain:
         return hash_result
 
     # Function to check if the chain is valid
-    def is_chain_valid(self):
-        previous_block = self.chain[0]
+    def is_chain_valid(self, chain):
+        previous_block = chain[0]
         block_index = 1
 
-        while block_index<len(self.chain):
-            current_block = self.chain[block_index]
+        while block_index<len(chain):
+            current_block = chain[block_index]
 
             # Check 1 - Checking if previous hash stored in current block is equal to the hash result on inputting the previous block
-            if current_block['previous_hash'] != self.hash_function(previous_block):
+            stored_previous_hash = current_block['previous_hash']
+            actual_previous_hash = self.hash_function(previous_block)
+            if actual_previous_hash != stored_previous_hash:
                 return False
             
             previous_proof = previous_block['proof']
@@ -97,8 +99,9 @@ class Blockchain:
         for node in network:
             response = requests.get(f'http://{node}/get_chain')
             if response.status_code == 200:
-                length = response.json()['length']
-                chain = response.json()['chain']
+                response_json = response.json()
+                length = response_json['length']
+                chain = response_json['chain']
                 if length>max_length and self.is_chain_valid(chain):
                     longest_chain = chain
                     max_length = length

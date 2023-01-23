@@ -1,12 +1,12 @@
 from flask import jsonify
 from chain import Blockchain
 
-def mine_block(blockchain: Blockchain, node_address):
+def mine_block(blockchain: Blockchain, node_address, receiver):
     previous_block = blockchain.get_previous_block()
     previous_proof = previous_block['proof']
     proof = blockchain.proof_of_work(previous_proof)
     previous_hash = blockchain.hash_function(previous_block)
-    blockchain.add_transaction(node_address, "Swadesh", 1)      # mining reward
+    blockchain.add_transaction(node_address, receiver, 1)      # mining reward
     new_block = blockchain.create_block(proof, previous_hash)
 
     response = {
@@ -18,4 +18,4 @@ def mine_block(blockchain: Blockchain, node_address):
         'transactions': new_block['transactions']
     }
 
-    return jsonify(response, 200)
+    return jsonify(response), 200
